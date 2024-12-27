@@ -1,3 +1,15 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+    body {
+        font-family: "sans-serif", "Helvetica Neue", "Arial";
+        @apply bg-gray-950;
+        @apply text-gray-50 text-lg;
+        height: 100%;
+        overflow-y: hidden;
+        background-size: 100% 100%, 30% 30%, 100% 100%;
+        min-height: 110rem;
+    }
+}
