@@ -16,3 +16,50 @@ export function getNewBoard(board, row, col, piece) {
     boardCopy[row][col] = piece;
     return boardCopy
 }
+
+
+export function checkWinnerMove(board, player){
+    console.log(board)
+    const rowCount = board.length;
+    const colCount = board[0].length;
+
+    // Horizontal Winning
+    for (let c=0; c <= colCount-3; c++) {
+        for (let r=0; r < rowCount; r++) {
+            if (board[r][c] === player && board[r][c+1] === player && board[r][c+2] === player && board[r][c+3] === player) {
+                return true;
+            }
+        }
+    }
+    // Vertical Winning
+    for (let r=0; r <= rowCount-3; r++) {
+        for (let c=0; c < colCount; c++) {
+            if (board[r][c] === player && board[r+1][c] === player && board[r+2][c] === player && board[r+3][c] === player) {
+                return true;
+            }
+        }
+    }
+
+    // Positive Diagonal Winning
+    for (let r=3; r < rowCount; r++) {
+        for (let c=0; c <= colCount-3; c++) {
+            if (board[r][c] === player && board[r-1][c+1] === player && board[r-2][c+2] === player && board[r-3][c+3] === player) {
+                return true;
+            }
+        }
+    }
+
+    // Negative Diagonal Winning
+    for (let r=0; r <= rowCount-3; r++) {
+        for (let c=0; c <= colCount-3; c++) {
+            if (board[r][c] === player && board[r+1][c+1] === player && board[r+2][c+2] === player && board[r+3][c+3] === player) {
+                return true;
+            }
+        }
+    }
+
+
+
+    return false;
+
+}

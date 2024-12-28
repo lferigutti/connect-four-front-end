@@ -1,5 +1,6 @@
 import {useState} from "react";
-import {getNewBoard, getNextRowAvailable} from "../gameLogic.js"
+import {checkWinnerMove, getNewBoard, getNextRowAvailable} from "../gameLogic.js"
+import Piece from "./Piece.jsx";
 
 
 const ROW_COUNTER = 6
@@ -22,10 +23,10 @@ function initGameBoard(row_count ,col_count ) {
 const DUMMY_BOARD = [
     [0,0,0,0,0,0,0],
     [0,0,0,0,0,0,0],
-    [0,0,2,0,0,0,0],
-    [0,0,0,1,0,0,0],
     [0,0,0,0,0,0,0],
-    [1,0,0,0,0,0,2],
+    [0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0],
 ]
 
 function transposeBoard(board) {
@@ -36,16 +37,28 @@ export default function GameBoard() {
     //const gameBoard = initGameBoard(ROW_COUNTER, COLUMN_COUNTER);
     //const gameBoard = DUMMY_BOARD
     const [gameBoard, setGameBoard] = useState(DUMMY_BOARD)
+    const [currentPlayer, setCurrentPlayer] = useState(1)
+    const [winner, setWinner] = useState(undefined)
+
+    function handleNextPlayer(currentPlayerCopy){
+        setCurrentPlayer(()=> {
+            if (currentPlayerCopy === 1) {
+                return 2;
+            } else return 1;
+        })
+    }
+
 
     function handleClickOnGameBoard(colIndex) {
-        setGameBoard((previousBoard)=>{
-            const prevBoard = [...previousBoard.map(innerArray => [...innerArray])];
-            const nextRowAvailable = getNextRowAvailable(prevBoard, colIndex)
-            if (nextRowAvailable >= 0){
-               return getNewBoard(prevBoard, nextRowAvailable, colIndex, 1)
-            }
-            return prevBoard;
-        })
+        const currentPlayerCopy = currentPlayer
+        const prevBoard = [...gameBoard.map(innerArray => [...innerArray])];
+        const nextRowAvailable = getNextRowAvailable(prevBoard, colIndex)
+        if (nextRowAvailable >= 0) {
+            const newBoard = getNewBoard(prevBoard, nextRowAvailable, colIndex, currentPlayerCopy)
+            setGameBoard(()=>newBoard)
+            const isThereAWinner = checkWinnerMove(newBoard,currentPlayerCopy)
+            {isThereAWinner? setWinner(currentPlayerCopy): handleNextPlayer(currentPlayerCopy)}
+        }
     }
 
     return (
@@ -53,19 +66,14 @@ export default function GameBoard() {
                <div className="flex">
                    {transposeBoard(gameBoard).map((col, colIndex) => (
                        <div key={colIndex} className="flex flex-col">
-                           <button onClick={()=>handleClickOnGameBoard(colIndex)} className='hover:bg-sky-800'>
-                                   {col.map((coin, rowIndex) => (
-                                       <div key={`${colIndex}-${rowIndex}`}
-                                            className={`flex h-20 w-20 border-4 border-sky-600 rounded-full 
-                                            ${
-                                                coin === 0 ? "bg-gray-950" : coin === 1 ? "bg-green-400" : "bg-yellow-400"
-                                            }`
-                                       }>
-                                       </div>
+                           <button onClick={()=>handleClickOnGameBoard(colIndex)} className='hover:bg-sky-800' disabled={!!winner}>
+                                   {col.map((piece, rowIndex) => (
+                                    <Piece key={`${colIndex}-${rowIndex}`} piece={piece} />
                                    ))}
                            </button>
                    </div>))}
                </div>
+                <p>{winner && "There is a winner"}</p>
             </div>
 
     )
