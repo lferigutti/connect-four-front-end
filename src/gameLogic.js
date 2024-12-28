@@ -19,7 +19,6 @@ export function getNewBoard(board, row, col, piece) {
 
 
 export function checkWinnerMove(board, player){
-    console.log(board)
     const rowCount = board.length;
     const colCount = board[0].length;
 
@@ -32,9 +31,9 @@ export function checkWinnerMove(board, player){
         }
     }
     // Vertical Winning
-    for (let r=0; r <= rowCount-3; r++) {
+    for (let r=3; r < rowCount; r++) {
         for (let c=0; c < colCount; c++) {
-            if (board[r][c] === player && board[r+1][c] === player && board[r+2][c] === player && board[r+3][c] === player) {
+            if (board[r][c] === player && board[r-1][c] === player && board[r-2][c] === player && board[r-3][c] === player) {
                 return true;
             }
         }
@@ -50,16 +49,24 @@ export function checkWinnerMove(board, player){
     }
 
     // Negative Diagonal Winning
-    for (let r=0; r <= rowCount-3; r++) {
-        for (let c=0; c <= colCount-3; c++) {
+    for (let r=0; r <= rowCount-4; r++) {
+        for (let c=0; c <= colCount; c++) {
             if (board[r][c] === player && board[r+1][c+1] === player && board[r+2][c+2] === player && board[r+3][c+3] === player) {
                 return true;
             }
         }
     }
-
-
-
     return false;
+}
 
+export function initGameBoard(row_count ,col_count ) {
+    const board = []
+    for (let i = 0; i < row_count; i++) {
+        const row = []
+        for (let j = 0; j < col_count; j++) {
+            row.push(0)
+        }
+        board.push(row)
+    }
+    return board
 }
