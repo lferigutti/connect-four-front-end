@@ -18,7 +18,6 @@ export default function GameBoard({gameBoard, onClickBoard, winner, playersInfo}
                            </button>
                    </div>))}
                </div>
-                <p>{winner && "Winner Player" + winner }</p>
             </div>
 
     )

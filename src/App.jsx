@@ -6,7 +6,7 @@ function App() {
   return (
     <>
       <Header />
-      <div className="flex flex-col items-center h-screen justify-center">
+      <div className="flex flex-col items-center">
         <GameBoardContainer />
       </div>
     </>

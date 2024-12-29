@@ -2,6 +2,7 @@ import GameBoard from "./GameBoard.jsx";
 import {useState} from "react";
 import {checkWinnerMove, getNewBoard, getNextRowAvailable, initGameBoard} from "../gameLogic.js";
 import Player from "./Player.jsx";
+import GameOver from "./GameOver.jsx";
 
 
 const ROW_COUNTER = 6
@@ -35,6 +36,14 @@ export function GameBoardContainer() {
         })
     }
 
+    function handleRematch (){
+        const emptyBoard = initGameBoard(ROW_COUNTER, COLUMN_COUNTER)
+        const currentPlayerCopy = currentPlayer
+        setGameBoard(emptyBoard)
+        setWinner(undefined)
+        handleNextPlayer(currentPlayerCopy)
+    }
+
 
     function handleClickOnGameBoard(colIndex) {
         const currentPlayerCopy = currentPlayer
@@ -48,26 +57,29 @@ export function GameBoardContainer() {
         }
     }
  return (
-     <div className="h-5/6 w-6/12 flex flex-col items-center border-2 border-sky-950">
-         <div className="flex justify-evenly w-full">
+     <div className="flex flex-col items-center">
+         <div className="flex justify-evenly w-full p-5">
              <Player
                  name={PLAYERS.playerOne.name}
                  pieceColor={PLAYERS.playerOne.colorPiece}
+                 isActive={PLAYERS.playerOne.piece === currentPlayer}
              />
              <Player
                  name={PLAYERS.playerTwo.name}
                  pieceColor={PLAYERS.playerTwo.colorPiece}
+                 isActive={PLAYERS.playerTwo.piece === currentPlayer}
              />
 
          </div>
-         <div className="mt-6">
+         <div className="justify-center items-center">
              <GameBoard
-             gameBoard={gameBoard}
-             onClickBoard={handleClickOnGameBoard}
-             winner={winner}
-             playersInfo={PLAYERS}
+                 gameBoard={gameBoard}
+                 onClickBoard={handleClickOnGameBoard}
+                 winner={winner}
+                 playersInfo={PLAYERS}
              />
          </div>
+         {winner && <GameOver winner={winner} onRematchClick={handleRematch} />}
      </div>
  )
 }
