@@ -10,6 +10,15 @@ export function getNextRowAvailable(board, colIndex){
     return -1
 }
 
+export function checkNoMoveAvailable(board) {
+    for (let col=0; col < board[0].length; col++) {
+        let nextRowAvailable = getNextRowAvailable(board, col)
+        if (nextRowAvailable >= 0) {
+            return false;
+        }
+    }
+    return true
+}
 
 export function getNewBoard(board, row, col, piece) {
     const boardCopy = [...board.map(innerArray => [...innerArray])];

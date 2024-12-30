@@ -1,6 +1,6 @@
 import GameBoard from "./GameBoard.jsx";
 import {useState} from "react";
-import {checkWinnerMove, getNewBoard, getNextRowAvailable, initGameBoard} from "../gameLogic.js";
+import {checkNoMoveAvailable, checkWinnerMove, getNewBoard, getNextRowAvailable, initGameBoard} from "../gameLogic.js";
 import Player from "./Player.jsx";
 import GameOver from "./GameOver.jsx";
 
@@ -53,8 +53,12 @@ export function GameBoardContainer() {
             const newBoard = getNewBoard(prevBoard, nextRowAvailable, colIndex, currentPlayerCopy)
             setGameBoard(()=>newBoard)
             const isThereAWinner = checkWinnerMove(newBoard,currentPlayerCopy)
-            {isThereAWinner? setWinner(currentPlayerCopy): handleNextPlayer(currentPlayerCopy)}
+            {isThereAWinner? setWinner(currentPlayerCopy):
+                handleNextPlayer(currentPlayerCopy);
+                {checkNoMoveAvailable(newBoard) && setWinner(-1)}
+            }
         }
+
     }
  return (
      <div className="flex flex-col items-center">
