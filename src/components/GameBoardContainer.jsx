@@ -1,6 +1,13 @@
 import GameBoard from "./GameBoard.jsx";
-import {useState} from "react";
-import {checkNoMoveAvailable, checkWinnerMove, getNewBoard, getNextRowAvailable, initGameBoard} from "../gameLogic.js";
+import {useRef, useState} from "react";
+import {
+    getWinner,
+    checkNoMoveAvailable,
+    checkWinnerMove,
+    getNewBoard,
+    getNextRowAvailable,
+    initGameBoard
+} from "../gameLogic.js";
 import Player from "./Player.jsx";
 import GameOver from "./GameOver.jsx";
 
@@ -27,6 +34,7 @@ export function GameBoardContainer() {
     const [gameBoard, setGameBoard] = useState(initialBoard)
     const [currentPlayer, setCurrentPlayer] = useState(1)
     const [winner, setWinner] = useState(undefined)
+    const dialog = useRef();
 
     function handleNextPlayer(currentPlayerCopy){
         setCurrentPlayer(()=> {
@@ -44,18 +52,23 @@ export function GameBoardContainer() {
         handleNextPlayer(currentPlayerCopy)
     }
 
+    function handleGameOver(winner) {
+        setWinner(winner)
+        dialog.current.showModal();
+    }
+
 
     function handleClickOnGameBoard(colIndex) {
         const currentPlayerCopy = currentPlayer
         const prevBoard = [...gameBoard.map(innerArray => [...innerArray])];
         const nextRowAvailable = getNextRowAvailable(prevBoard, colIndex)
+
         if (nextRowAvailable >= 0) {
             const newBoard = getNewBoard(prevBoard, nextRowAvailable, colIndex, currentPlayerCopy)
             setGameBoard(()=>newBoard)
-            const isThereAWinner = checkWinnerMove(newBoard,currentPlayerCopy)
-            {isThereAWinner? setWinner(currentPlayerCopy):
+            const winnerPlayer = getWinner(newBoard, currentPlayerCopy)
+            {winnerPlayer? handleGameOver(winnerPlayer):
                 handleNextPlayer(currentPlayerCopy);
-                {checkNoMoveAvailable(newBoard) && setWinner(-1)}
             }
         }
 
@@ -83,7 +96,7 @@ export function GameBoardContainer() {
                  playersInfo={PLAYERS}
              />
          </div>
-         {winner && <GameOver winner={winner} onRematchClick={handleRematch} />}
+         <GameOver winner={winner} onRematchClick={handleRematch} ref={dialog} />
      </div>
  )
 }

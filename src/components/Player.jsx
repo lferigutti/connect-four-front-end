@@ -6,7 +6,6 @@ export default function Player({name, pieceColor, isActive}) {
         }`}>
             {name}
         </span>
-
         </>
     )
 }

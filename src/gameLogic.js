@@ -26,6 +26,22 @@ export function getNewBoard(board, row, col, piece) {
     return boardCopy
 }
 
+/*
+This function Check if the game is over and returns
+    (-1) if it there is a tie
+     (0) No winner and keep playing
+     (1 or 2) if a player won
+ */
+export function getWinner(board, player){
+    if (checkWinnerMove(board, player)){
+        return player;
+    }
+    if (checkNoMoveAvailable(board)) {
+        return -1;
+    }
+    return 0;
+}
+
 
 export function checkWinnerMove(board, player){
     const rowCount = board.length;
